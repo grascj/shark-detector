@@ -1,0 +1,15 @@
+{
+  "manifest_version": 2,
+  "name": "Shark-Detector",
+  "version": "0.1",
+
+  "default_locale": "en",
+  "description": "A Chrome Extension to find and prevent tabnabbing attacks.",
+  "icons": {...},
+
+  "browser_action": {
+	      "default_icon": "icon.png"
+  },
+
+  "author": "Chris Grasing & Kim Allan"
+}
