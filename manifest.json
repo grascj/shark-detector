@@ -11,5 +11,11 @@
 	      "default_icon": "icon.png"
   },
 
+  "content_script": [
+	  {
+		  "matches": []
+	  }
+  ],
+
   "author": "Chris Grasing & Kim Allan"
 }
