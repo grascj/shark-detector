@@ -1,19 +1,28 @@
 {
   "manifest_version": 2,
-  "name": "Shark-Detector",
+  "name": "shark-detector",
   "version": "0.1",
 
-  "default_locale": "en",
-  "description": "A Chrome Extension to find and prevent tabnabbing attacks.",
-  "icons": {...},
 
-  "browser_action": {
-	      "default_icon": "icon.png"
+  "permissions": [
+	  "tabs",
+	  "activeTab",
+	  "webNavigation",
+	  "storage"
+  ],
+
+
+  "background": {
+    "persistent": false,
+    "scripts": ["resemble.js","screenshotter.js"]
   },
 
-  "content_script": [
+
+
+  "content_scripts": [
 	  {
-		  "matches": []
+		  "matches": ["https://www.amazon.com/*"],
+		  "js": ["shark-detector.js"]
 	  }
   ],
 
