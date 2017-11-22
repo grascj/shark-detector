@@ -14,7 +14,7 @@
 
   "background": {
     "persistent": false,
-    "scripts": ["resemble.js","screenshotter.js"]
+    "scripts": ["resemble.js","imageanalyzer.js","screenshotter.js"]
   },
 
 

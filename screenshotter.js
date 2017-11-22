@@ -35,4 +35,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 	console.log(image_dict);
 });
 
-
+imagePercentDiff("People.jpg","People2.jpg", function(percentdiff) {
+  console.log(percentdiff);
+});
+addDiffImage(document.body,"People.jpg","People2.jpg");
