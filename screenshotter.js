@@ -34,11 +34,16 @@ var screenshot_thread = null;
 chrome.tabs.onActivated.addListener(function listener(activeInfo) {
 
 	chrome.tabs.get(activeInfo.tabId, function callback(tab){
+		if(tab.url === undefined) {
+			clearInterval(screenshot_thread);
+			return;
+		}
 
 		var url = new URL(tab.url); 
 		
 		if(!(url.protocol == "https:" || url.protocol == "http:")){
-			return;
+			clearInterval(screenshot_thread);
+                	return;
 		}
 
 		chrome.tabs.captureVisibleTab({format : "png"}, function(img) {
@@ -48,7 +53,8 @@ chrome.tabs.onActivated.addListener(function listener(activeInfo) {
 
 			if(image_dict[tab.id] === undefined){
 				image_dict[tab.id] = [tab.url,img];
-				console.log(image_dict)
+				console.log(image_dict);
+				screenshot_thread = setInterval(spamScreenShots,INTERVAL,tab.id);
 			}else{
 				if(tab.active){
 					resemble(img).compareTo(image_dict[tab.id][1]).onComplete(function(data) {
@@ -56,14 +62,20 @@ chrome.tabs.onActivated.addListener(function listener(activeInfo) {
 						console.log(data.misMatchPercentage + "% change in original page." + tab.active);
 
 						//TODO DO SOMETHING WITH THIS PERCENTAGE
+						if(data.misMatchPercentage > 0) {
+							chrome.tabs.create({url : data.getImageDataUrl()});
+						}
 						image_dict[tab.id] = [tab.url,img];
-						console.log(image_dict)
+						console.log(image_dict);
+						if(data.misMatchPercentage <= 0) {
+							screenshot_thread = setInterval(spamScreenShots,INTERVAL,tab.id);
+						}
 					});
 				}
 			}
 
 			//start up the old screenshot spam thread
-			screenshot_thread = setInterval(spamScreenShots,INTERVAL,tab.id);
+			//screenshot_thread = setInterval(spamScreenShots,INTERVAL,tab.id);
 
 		});
 	});
