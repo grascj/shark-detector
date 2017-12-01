@@ -1,9 +1,11 @@
-
+//TODO ORGANIZE THIS MESS
 
 var image_dict = {};
 
 var INTERVAL = 5000;
 
+var current_img = null;
+var current_pct = 0;
 
 function spamScreenShots(id){
 
@@ -55,6 +57,8 @@ chrome.tabs.onActivated.addListener(function listener(activeInfo) {
                 	return;
 		}
 
+		chrome.pageAction.hide(tab.id);
+
 		chrome.tabs.captureVisibleTab({format : "png"}, function(img) {
 			clearInterval(screenshot_thread);
 
@@ -68,9 +72,14 @@ chrome.tabs.onActivated.addListener(function listener(activeInfo) {
 
 						console.log(data.misMatchPercentage + "% change in original page." + tab.active);
 
-						//TODO DO SOMETHING WITH THIS PERCENTAGE
 						if(data.misMatchPercentage > 0) {
-							chrome.tabs.create({url : data.getImageDataUrl()});
+							current_img = data.getImageDataUrl();
+							current_pct = data.misMatchPercentage;
+
+							//pop up
+							chrome.pageAction.show(tab.id);
+							chrome.pageAction.setIcon({tabId:tab.id, path : {"32":"/icons/glyphicons-532-hazard.png"}});
+
 							delete image_dict[tab.id];
 							return;
 						}

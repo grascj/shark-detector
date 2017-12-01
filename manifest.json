@@ -7,16 +7,22 @@
   "permissions": [
 	  "tabs",
 	  "activeTab",
-	  "webNavigation",
-	  "<all_urls>",
-	  "storage"
+	  "<all_urls>"
   ],
 
+  "page_action": {
+	  "default_icon": {     
+		  "32": "icons/glyphicons-207-ok.png"
+	  },
+	  "default_title": "shark-detector",     
+	  "default_popup": "attack-detected.html"      
+  },
 
   "background": {
     "persistent": false,
     "scripts": ["resemble.js","imageanalyzer.js","screenshotter.js"]
   },
+
 
   "author": "Chris Grasing & Kim Allan"
 }
