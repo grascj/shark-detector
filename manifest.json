@@ -18,14 +18,5 @@
     "scripts": ["resemble.js","imageanalyzer.js","screenshotter.js"]
   },
 
-
-
-  "content_scripts": [
-	  {
-		  "matches": ["https://www.amazon.com/*"],
-		  "js": ["shark-detector.js"]
-	  }
-  ],
-
   "author": "Chris Grasing & Kim Allan"
 }

@@ -6,10 +6,17 @@ var INTERVAL = 5000;
 
 
 function spamScreenShots(id){
-		chrome.tabs.captureVisibleTab({format : "png"}, function(img){
-			console.log("firing");
-			image_dict[id][1] = img;
-		});
+
+	chrome.tabs.executeScript(id, {code:"document.hasFocus();"}, function(results){
+
+		if(results[0]){//page has focus
+
+			chrome.tabs.captureVisibleTab({format : "png"}, function(img){
+				console.log("firing");
+				image_dict[id][1] = img;
+			});
+		}
+	});
 }
 
 //var screenshot_thread = setInterval(spamScreenShots,INTERVAL,1,"test");
@@ -32,13 +39,15 @@ var screenshot_thread = null;
  *
  */
 chrome.tabs.onActivated.addListener(function listener(activeInfo) {
-	clearInterval(screenshot_thread);
 
+	//stop the screenshot spam
+	clearInterval(screenshot_thread);
+	
+	
 	chrome.tabs.get(activeInfo.tabId, function callback(tab){
 		if(tab.url === undefined) {
 			return;
 		}
-		
 
 		var url = new URL(tab.url); 
 		
@@ -47,14 +56,12 @@ chrome.tabs.onActivated.addListener(function listener(activeInfo) {
 		}
 
 		chrome.tabs.captureVisibleTab({format : "png"}, function(img) {
-			
-			//stop the old thread of spamming screenshots
 			clearInterval(screenshot_thread);
 
 			if(image_dict[tab.id] === undefined){
 				image_dict[tab.id] = [tab.url,img];
 				console.log(image_dict);
-				//screenshot_thread = setInterval(spamScreenShots,INTERVAL,tab.id);
+				screenshot_thread = setInterval(spamScreenShots,INTERVAL,tab.id);
 			}else{
 				if(tab.active){
 					resemble(img).compareTo(image_dict[tab.id][1]).onComplete(function(data) {
@@ -69,16 +76,10 @@ chrome.tabs.onActivated.addListener(function listener(activeInfo) {
 						}
 						image_dict[tab.id] = [tab.url,img];
 						console.log(image_dict);
-						//if(data.misMatchPercentage <= 0) {
-						//	screenshot_thread = setInterval(spamScreenShots,INTERVAL,tab.id);
-						//}
+						screenshot_thread = setInterval(spamScreenShots,INTERVAL,tab.id);
 					});
 				}
 			}
-
-			//start up the old screenshot spam thread
-			screenshot_thread = setInterval(spamScreenShots,INTERVAL,tab.id);
-
 		});
 	});
 });
@@ -105,11 +106,11 @@ chrome.tabs.onRemoved.addListener(function (tabId, changeInfo, tab) {
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 
 	if(tab.active && changeInfo.status=="complete"){
+		clearInterval(screenshot_thread);
 
 		var url = new URL(tab.url);
 
 		//stop the old thread of spamming screenshots
-		clearInterval(screenshot_thread);
 
 		if(url.protocol == "https:" || url.protocol == "http:"){
 			chrome.tabs.captureVisibleTab({format : "png"}, function(img) {
