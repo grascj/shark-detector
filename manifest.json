@@ -19,7 +19,7 @@
   },
 
   "background": {
-    "persistent": false,
+    "persistent": true,
     "scripts": ["resemble.js","constants.js","shark-utils.js","shark-detector.js"]
   },
 

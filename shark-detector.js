@@ -55,11 +55,9 @@ chrome.tabs.onActivated.addListener(function listener(activeInfo) {
  *
  */
 chrome.tabs.onRemoved.addListener(function (tabId, changeInfo, tab) {
-
-	//theres a bug if you have the dev console open
-	if(DEBUG){
-		stop_screenshot_spam();
-	}
+	
+	
+	stop_screenshot_spam();
 
 	delete image_dict[tabId];
 	shark_log(image_dict);
@@ -93,5 +91,18 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 });
 
 
+chrome.windows.onFocusChanged.addListener(function (currWindowId) {
+	stop_screenshot_spam();
+	//stop_delay_thread();
+	
+	if(currWindowId == chrome.windows.WINDOW_ID_NONE){
+		return;
+	}
 
+	chrome.tabs.query({windowId : currWindowId, active : true}, function(tabs) {
+		if(tabs == null)
+			return; 
+		updateState(tabs[0], false); 		
+	});
+});
 

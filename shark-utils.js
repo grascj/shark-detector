@@ -57,6 +57,11 @@ function stop_screenshot_spam(){
 	screenshot_thread=null;
 }
 
+function stop_delay_thread(){
+	clearInterval(delay_thead);
+	delay_thread=null;
+}
+
 
 
 /*
@@ -99,6 +104,28 @@ function record_page(tab, isNewRequest){
 		});
 
 	},START_DELAY);
+}
+
+function updateState(tab, isNewRequest) {
+	stop_screenshot_spam();
+
+	chrome.pageAction.hide(tab.id);
+
+	if(tab.url === undefined) {
+              return;
+        }
+
+        var url = new URL(tab.url);
+
+        if(!(url.protocol == "https:" || url.protocol == "http:")){
+        	return;
+        }
+
+        try{
+        	record_page(tab, isNewRequest);
+        }catch(err){
+		shark_log(err);
+	}
 }
 
 
