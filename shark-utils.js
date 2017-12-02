@@ -1,4 +1,19 @@
 
+
+
+/*
+ *
+ * Only print if we are debugging
+ *
+ */
+function shark_log(string){
+	if(DEBUG){
+		console.log(string);
+	}
+}
+
+
+
 /*
  *	This is the thread to keep taking screenshots for some interval of time.
  *
@@ -11,7 +26,7 @@ function spamScreenShots(id){
 		if(results[0]){//page has focus
 
 			chrome.tabs.captureVisibleTab({format : "png"}, function(img){
-				console.log("firing");
+				shark_log("firing");
 				image_dict[id][1] = img;
 			});
 		}
@@ -51,9 +66,14 @@ function stop_screenshot_spam(){
  *	isNewRequest - boolean for whether of not the caller is just a new GET request.
  */
 function record_page(tab, isNewRequest){
-	console.log(tab.id);
-	setTimeout(function(){
-		console.log(tab.id+" : " + tab.active);
+	if(delay_thread!=null){
+		clearTimeout(delay_thread);
+		delay_thread=null;
+	}
+
+
+	delay_thread = setTimeout(function(){
+		shark_log(tab.id+" : " + tab.active);
 		if(!tab.active){
 			return;
 		}
@@ -67,13 +87,13 @@ function record_page(tab, isNewRequest){
 			if(isNewRequest || image_dict[tab.id] === undefined){
 
 				image_dict[tab.id] = [tab.url,img];
-				console.log(image_dict);
+				shark_log(image_dict);
 				start_screenshot_spam(tab.id);
 
 			}else{
 				if(tab.active){
 					checkPageDiff(img,tab);
-					console.log(image_dict);
+					shark_log(image_dict);
 				}
 			}
 		});
@@ -91,7 +111,7 @@ function record_page(tab, isNewRequest){
 function checkPageDiff(img, tab){
 	resemble(img).compareTo(image_dict[tab.id][1]).onComplete(function(data) {
 
-		console.log(data.misMatchPercentage + "% change in original page." + tab.active);
+		shark_log(data.misMatchPercentage + "% change in original page." + tab.active);
 
 		current_img = data.getImageDataUrl();
 		current_pct = data.misMatchPercentage;

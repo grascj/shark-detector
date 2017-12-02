@@ -10,6 +10,7 @@ var current_pct = 0;
 
 // The thread which will take screenshots at intervals
 var screenshot_thread = null;
+var delay_thread = null;
 
 
 /*
@@ -40,7 +41,7 @@ chrome.tabs.onActivated.addListener(function listener(activeInfo) {
 			record_page(tab, false);
 
 		}catch(err){
-			console.log(err);
+			shark_log(err);
 
 		}
 
@@ -54,8 +55,14 @@ chrome.tabs.onActivated.addListener(function listener(activeInfo) {
  *
  */
 chrome.tabs.onRemoved.addListener(function (tabId, changeInfo, tab) {
+
+	//theres a bug if you have the dev console open
+	if(DEBUG){
+		stop_screenshot_spam();
+	}
+
 	delete image_dict[tabId];
-	console.log(image_dict);
+	shark_log(image_dict);
 });
 
 
@@ -76,6 +83,15 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
                 	return;
 		}
 
-		record_page(tab, true);
+		try{
+			record_page(tab, true);
+		}catch(err){
+			shark_log(err);
+
+		}
 	}
 });
+
+
+
+

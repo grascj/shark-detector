@@ -1,4 +1,7 @@
 
+// will print to console
+var DEBUG = true;
+
 // milliseconds between screenshots
 var INTERVAL = 5000;
 
