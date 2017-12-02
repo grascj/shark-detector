@@ -12,7 +12,7 @@
 
   "page_action": {
 	  "default_icon": {     
-		  "32": "icons/glyphicons-207-ok.png"
+		  "24": "icons/glyphicons-207-ok.png"
 	  },
 	  "default_title": "shark-detector",     
 	  "default_popup": "attack-detected.html"      
@@ -20,7 +20,7 @@
 
   "background": {
     "persistent": false,
-    "scripts": ["resemble.js","imageanalyzer.js","screenshotter.js"]
+    "scripts": ["resemble.js","constants.js","shark-utils.js","shark-detector.js"]
   },
 
 
