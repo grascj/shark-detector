@@ -58,7 +58,7 @@ function stop_screenshot_spam(){
 }
 
 function stop_delay_thread(){
-	clearInterval(delay_thead);
+	clearInterval(delay_thread);
 	delay_thread=null;
 }
 
@@ -126,6 +126,12 @@ function updateState(tab, isNewRequest) {
         }catch(err){
 		shark_log(err);
 	}
+}
+
+function removeTab(tabId) {
+	delete image_dict[tabId];
+	shark_log(image_dict);
+        shark_log("deleted " + tabId);
 }
 
 

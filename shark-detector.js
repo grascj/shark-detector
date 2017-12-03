@@ -25,7 +25,10 @@ chrome.tabs.onActivated.addListener(function listener(activeInfo) {
 	stop_screenshot_spam();
 	
 	chrome.tabs.get(activeInfo.tabId, function callback(tab){
-		if(tab.url === undefined) {
+		if(chrome.runtime.lastError) {
+                	return;
+        	}
+		if(tab == undefined || tab.url === undefined) {
 			return;
 		}
 
@@ -54,13 +57,13 @@ chrome.tabs.onActivated.addListener(function listener(activeInfo) {
  * If a tab is deleted it's entry is removed the entry from the dictionary
  *
  */
-chrome.tabs.onRemoved.addListener(function (tabId, changeInfo, tab) {
-	
-	
-	stop_screenshot_spam();
+chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
+	if(removeInfo.isWindowClosing) {
+		stop_delay_thread();
+		stop_screenshot_spam();		 
+	}
 
-	delete image_dict[tabId];
-	shark_log(image_dict);
+	removeTab(tabId);
 });
 
 
@@ -93,7 +96,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 
 chrome.windows.onFocusChanged.addListener(function (currWindowId) {
 	stop_screenshot_spam();
-	//stop_delay_thread();
+	stop_delay_thread();
 	
 	if(currWindowId == chrome.windows.WINDOW_ID_NONE){
 		return;
@@ -106,3 +109,8 @@ chrome.windows.onFocusChanged.addListener(function (currWindowId) {
 	});
 });
 
+chrome.windows.onRemoved.addListener(function(currWindowId) {
+	shark_log("removing window " + currWindowId);	
+	stop_delay_thread();
+        stop_screenshot_spam();
+});
