@@ -107,6 +107,7 @@ function record_page(tab, isNewRequest){
 }
 
 function updateState(tab, isNewRequest) {
+	stop_delay_thread();
 	stop_screenshot_spam();
 
 	chrome.pageAction.hide(tab.id);
@@ -143,25 +144,49 @@ function removeTab(tabId) {
  */
 function checkPageDiff(img, tab){
 	resemble(img).compareTo(image_dict[tab.id][1]).onComplete(function(data) {
+		var currTabId = tab.id;
+		//check if tab no longer exists
+		if(image_dict[currTabId] == undefined) {
+			shark_log(currTabId + " no longer exists");
+			return;		
+		}
 
 		shark_log(data.misMatchPercentage + "% change in original page." + tab.active);
 
 		current_img = data.getImageDataUrl();
 		current_pct = data.misMatchPercentage;
 
+		var icon;
 		if(data.misMatchPercentage < 20) {
-			chrome.pageAction.setIcon({tabId:tab.id, path : ICON_SAFE });
+			icon = {tabId:currTabId, path : ICON_SAFE };
 		}else if(data.misMatchPercentage < 50) {
-			chrome.pageAction.setIcon({tabId:tab.id, path : ICON_WARNING });
+			icon = {tabId:currTabId, path : ICON_WARNING };
 		}else{
-			chrome.pageAction.setIcon({tabId:tab.id, path : ICON_HAZARD });
+			icon = {tabId:currTabId, path : ICON_HAZARD };
 		}
-		chrome.pageAction.show(tab.id);
 
+		chrome.pageAction.setIcon(icon, function(){
+			if(chrome.runtime.lastError) {
+				shark_log(currTabId + " no longer exists");
+	                       	return;	//tab no longer exists
+                	}
+		});
+		
+		//check if tab no longer exists
+		if(image_dict[currTabId] == undefined) {
+			shark_log(currTabId + " no longer exists!");
+                        return;
+                }	
+		
+		chrome.pageAction.show(currTabId);
 
-
-		image_dict[tab.id] = [tab.url,img];
-		start_screenshot_spam(tab.id);
+		//check if tab no longer exists
+                if(image_dict[currTabId] == undefined) {
+                        shark_log(currTabId + " no longer exists");
+                        return;
+                }
+		image_dict[currTabId] = [tab.url,img];
+		start_screenshot_spam(currTabId);
 	});
 }
 

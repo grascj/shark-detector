@@ -21,7 +21,7 @@ var delay_thread = null;
  *
  */
 chrome.tabs.onActivated.addListener(function listener(activeInfo) {
-
+	stop_delay_thread();
 	stop_screenshot_spam();
 	
 	chrome.tabs.get(activeInfo.tabId, function callback(tab){
@@ -76,6 +76,7 @@ chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 
 	if(tab.active && changeInfo.status=="complete"){
+		stop_delay_thread();
 		stop_screenshot_spam();
 
 		var url = new URL(tab.url);
