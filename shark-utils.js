@@ -132,7 +132,7 @@ function updateState(tab, isNewRequest) {
 function removeTab(tabId) {
 	delete image_dict[tabId];
 	shark_log(image_dict);
-        shark_log("deleted " + tabId);
+	shark_log("deleted " + tabId);
 }
 
 

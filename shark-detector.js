@@ -35,6 +35,9 @@ chrome.tabs.onActivated.addListener(function listener(activeInfo) {
 		var url = new URL(tab.url); 
 		
 		if(!(url.protocol == "https:" || url.protocol == "http:")){
+			if(image_dict[tab.id] != undefined){
+				removeTab(tab.id);
+			}
                 	return;
 		}
 
@@ -82,6 +85,9 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 		var url = new URL(tab.url);
 
 		if(!(url.protocol == "https:" || url.protocol == "http:")){
+			if(image_dict[tab.id] != undefined){
+				removeTab(tab.id);
+			}
                 	return;
 		}
 
