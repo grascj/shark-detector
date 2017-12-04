@@ -105,6 +105,10 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 });
 
 
+/*
+ *	When the currently focused window changes, the active tab displayed changes
+ *
+ */
 chrome.windows.onFocusChanged.addListener(function (currWindowId) {
 	stop_screenshot_spam();
 	stop_delay_thread();
@@ -120,6 +124,10 @@ chrome.windows.onFocusChanged.addListener(function (currWindowId) {
 	});
 });
 
+/*
+ *	When a window is removed (along with all tabs), clear all timers
+ *
+ */
 chrome.windows.onRemoved.addListener(function(currWindowId) {
 	shark_log("removing window " + currWindowId);	
 	stop_delay_thread();

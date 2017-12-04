@@ -20,17 +20,10 @@ function shark_log(string){
  *	id - the tab id to take screenshots of.
  */
 function spamScreenShots(id){
-
-//	chrome.tabs.executeScript(id, {code:"document.hasFocus();"}, function(results){
-
-//		if(results[0]){//page has focus
-
-			chrome.tabs.captureVisibleTab({format : "png"}, function(img){
-				shark_log("firing");
-				image_dict[id][1] = img;
-			});
-//		}
-//	});
+	chrome.tabs.captureVisibleTab({format : "png"}, function(img){
+		shark_log("firing");
+		image_dict[id][1] = img;
+	});
 }
 
 
@@ -50,13 +43,16 @@ function start_screenshot_spam(tab_id){
 
 
 /*
- *	Kills a screenshot thread.
+ *	Kills a screenshot thread/timer.
  */
 function stop_screenshot_spam(){
 	clearInterval(screenshot_thread);
 	screenshot_thread=null;
 }
 
+/*
+ *	Kills a delay thread/timer.
+ */
 function stop_delay_thread(){
 	clearTimeout(delay_thread);
 	delay_thread=null;
@@ -106,6 +102,11 @@ function record_page(tab, isNewRequest){
 	},START_DELAY);
 }
 
+/*
+ *	Updates the globals after a window is refocused by recording a page.
+ *
+ *	tab - current tab
+ */
 function updateState(tab, isNewRequest) {
 	stop_delay_thread();
 	stop_screenshot_spam();
@@ -129,6 +130,11 @@ function updateState(tab, isNewRequest) {
 	}
 }
 
+/*
+ *	Remove a tab from the dictionary
+ *
+ *	tabId - tab id of removed tab
+ */
 function removeTab(tabId) {
 	delete image_dict[tabId];
 	shark_log(image_dict);
@@ -157,9 +163,9 @@ function checkPageDiff(img, tab){
 		current_pct = data.misMatchPercentage;
 
 		var icon;
-		if(data.misMatchPercentage < 20) {
+		if(data.misMatchPercentage < SAFE_CUTOFF) {
 			icon = {tabId:currTabId, path : ICON_SAFE };
-		}else if(data.misMatchPercentage < 50) {
+		}else if(data.misMatchPercentage < WARNING_CUTOFF) {
 			icon = {tabId:currTabId, path : ICON_WARNING };
 		}else{
 			icon = {tabId:currTabId, path : ICON_HAZARD };

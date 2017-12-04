@@ -14,7 +14,9 @@ var ICON_SAFE = {"24":"/icons/green-okay.png"};
 var ICON_WARNING = {"24":"/icons/yellow-warning.png"};
 var ICON_HAZARD = {"24":"/icons/red-hazard.png"};
 
-
+//cutoffs for percent differnce intervals
+var SAFE_CUTOFF = 20;
+var WARNING_CUTOFF = 50;
 
 
 
