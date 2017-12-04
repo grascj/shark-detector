@@ -82,6 +82,10 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 		stop_delay_thread();
 		stop_screenshot_spam();
 
+		if(tab == undefined || tab.url === undefined) {
+                        return;
+                }
+
 		var url = new URL(tab.url);
 
 		if(!(url.protocol == "https:" || url.protocol == "http:")){

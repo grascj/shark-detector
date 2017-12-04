@@ -21,16 +21,16 @@ function shark_log(string){
  */
 function spamScreenShots(id){
 
-	chrome.tabs.executeScript(id, {code:"document.hasFocus();"}, function(results){
+//	chrome.tabs.executeScript(id, {code:"document.hasFocus();"}, function(results){
 
-		if(results[0]){//page has focus
+//		if(results[0]){//page has focus
 
 			chrome.tabs.captureVisibleTab({format : "png"}, function(img){
 				shark_log("firing");
 				image_dict[id][1] = img;
 			});
-		}
-	});
+//		}
+//	});
 }
 
 
@@ -58,7 +58,7 @@ function stop_screenshot_spam(){
 }
 
 function stop_delay_thread(){
-	clearInterval(delay_thread);
+	clearTimeout(delay_thread);
 	delay_thread=null;
 }
 
